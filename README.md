@@ -3,8 +3,8 @@ Update from DE:
 <img width="555" height="910" alt="grafik" src="https://github.com/user-attachments/assets/94e60dc6-68f4-408b-b3fa-ef1ae4e8fb44" />
 
 their Link: https://support.warframe.com/hc/en-us/articles/360030014351-Third-Party-Software-and-You
+Desipte this Message/their communication remaining very vague. having this programm running while warframe is open will get you banned immediatly.
 
-i will tentativly act as if its allowed and will remove the disclaimers other than this conversation from any new versions
 
 A Warframe Tool to track your Inventory and Mastery progress.
 <img width="1249" height="555" alt="grafik" src="https://github.com/user-attachments/assets/a6f7cffc-8cd3-4536-bcb1-c5c85bccec1f" />
