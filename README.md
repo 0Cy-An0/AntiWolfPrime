@@ -1,6 +1,7 @@
 Update from DE:
 
-<img width="555" height="910" alt="grafik" src="https://github.com/user-attachments/assets/94e60dc6-68f4-408b-b3fa-ef1ae4e8fb44" />
+<img width="555" height="910" alt="grafik" src="https://github.com/user-attachments/assets/2367b1aa-389a-4f18-8ce9-89a578df0dc5" />
+
 
 their Link: https://support.warframe.com/hc/en-us/articles/360030014351-Third-Party-Software-and-You
 Desipte this Message/their communication remaining very vague. having this programm running while warframe is open will get you banned immediatly.
