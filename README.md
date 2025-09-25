@@ -1,4 +1,5 @@
 Update from DE:
+
 <img width="555" height="910" alt="grafik" src="https://github.com/user-attachments/assets/94e60dc6-68f4-408b-b3fa-ef1ae4e8fb44" />
 
 A Warframe Tool to track your Inventory and Mastery progress.
