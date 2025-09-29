@@ -17,8 +17,6 @@
 #include <unordered_map>
 #include <nlohmann/json.hpp>
 
-#include "../EELogParser/logParser.h"
-#include "../nonceGetter/nonceFinder.h"
 #include "FileAccess/FileAccess.h"
 
 //cache stuff; Max is in the header
@@ -234,13 +232,12 @@ std::vector<uint8_t> fetchUrl(const std::string& url, FetchType fetchType) {
     }
 }
 
-bool UpdatePlayerData(std::string nonce) {
+bool UpdatePlayerData(std::string extra) {
     //if (nonce.empty()) nonce = findNonceInProcess("Warframe.x64.exe");
-    std::string accountId = getLastPlayerId();
-    if (nonce.empty()) {
+    if (extra.empty()) {
         return false;
     }
-    std::string url = "api.warframe.com/api/inventory.php?accountId=" + accountId + "&nonce=" + nonce;
+    std::string url = "api.warframe.com/api/inventory.php?accountId=" + extra;
     LogThis("got url: "+  url);
     std::vector<uint8_t> vec = fetchUrl(url, FetchType::STRING);
     std::string result(vec.begin(), vec.end());

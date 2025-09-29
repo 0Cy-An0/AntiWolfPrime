@@ -21,7 +21,7 @@ private slots:
     void backgroundWork();
 
 private:
-    bool checkMissionFinished();
+    //bool checkMissionFinished();
     void triggerUpdate();
 
     std::atomic<bool> running;

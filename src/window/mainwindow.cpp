@@ -21,9 +21,7 @@
 #include "apiParser/apiParser.h"
 #include "autostart/autostart.h"
 #include "dataReader/dataReader.h"
-#include "EELogParser/logParser.h"
 #include "FileAccess/FileAccess.h"
-#include "nonceGetter/nonceFinder.h"
 
 //TODO: Move somewhere better
 bool caseInsensitiveFind(const std::string& str, const std::string& search) {
@@ -372,7 +370,7 @@ QWidget *MainWindow::createOverview() {
     OverviewLayout->setSpacing(6);
 
     // Top: Centered Name Text
-    auto *nameLabel = new QLabel(getLastPlayerName().data());
+    auto *nameLabel = new QLabel("Your Data");
     nameLabel->setAlignment(Qt::AlignCenter);
     QFont nameFont = nameLabel->font();
     nameFont.setPointSize(14);
@@ -874,12 +872,11 @@ QWidget* MainWindow::createOptionsPage() {
 
     // Explanation label for alternative method
     auto* altMethodLabel = new QLabel(
-        " Alternative: You can safely request your inventory data directly from DE.\n"
+        "You can safely request your inventory data directly from DE.\n"
         "Go to the Warframe Support site, choose 'Submit a Request' → 'My Account', and select\n"
         "'CCPA or GDPR - General Data Protection Regulation' as the category. Once they reply,\n"
         "you should receive a full data export including your inventory. Place the received file as:\n\n"
-        "data/Player/player_data.json\n\n"
-        "The Above option is more tedious but 100% allowed",
+        "data/Player/player_data.json",
         dataGroup
     );
     altMethodLabel->setWordWrap(true);
@@ -887,79 +884,15 @@ QWidget* MainWindow::createOptionsPage() {
     dataLayout->addWidget(altMethodLabel);
 
     auto authTokenInput = new QLineEdit(dataGroup);
-    authTokenInput->setPlaceholderText("enter auth token...");
-
-    auto autoFillBtn = new QPushButton("⚠", dataGroup);
-    autoFillBtn->setStyleSheet(btnStyle);
+    authTokenInput->setPlaceholderText("will try to download your inv. data by link: 'api.warframe.com/api/inventory.php?accountId=' + this string");
 
     auto gameUpdateBtn = new QPushButton("Update Game Data", dataGroup);
     gameUpdateBtn->setStyleSheet(btnStyle);
 
     auto* inputLayout = new QHBoxLayout();
     inputLayout->addWidget(authTokenInput);
-    inputLayout->addWidget(autoFillBtn);
     dataLayout->addLayout(inputLayout);
     dataLayout->addWidget(gameUpdateBtn);
-
-    // Auth Token Acknowledgement Dialog
-    connect(autoFillBtn, &QPushButton::clicked, this, [this, authTokenInput]() {
-        QDialog dialog(this);
-        dialog.setWindowTitle("Auth token getter");
-
-        QVBoxLayout* layout = new QVBoxLayout(&dialog);
-        QLabel* infoLabel = new QLabel(
-            "Before using this to automatically set your auth token, please confirm that you have read and understood the following:\n\n"
-            "- Until DE officially confirms otherwise you do this at your own risk.\n"
-            "- If you get banned from Warframe it is your own responsibility.\n"
-            "- You are aware that this will scan your games running memory to find the auth token.\n"
-            "- You are aware that this will not work until after you completed a mission and or entered a relay 3-5 times\n\n"
-            "Please acknowledge each item below to proceed.", &dialog
-        );
-        infoLabel->setWordWrap(true);
-        layout->addWidget(infoLabel);
-
-        QCheckBox* ack1 = new QCheckBox("I understand the risks and still proceed", &dialog);
-        QCheckBox* ack2 = new QCheckBox("I acknowledge that if I get banned it is MY fault.", &dialog);
-        QCheckBox* ack3 = new QCheckBox("I am aware this will scan the Warframe process.", &dialog);
-        QCheckBox* ack4 = new QCheckBox("I made sure to complete a mission and/or enter a relay 3–5 times.", &dialog);
-
-        layout->addWidget(ack1);
-        layout->addWidget(ack2);
-        layout->addWidget(ack3);
-        layout->addWidget(ack4);
-
-        QHBoxLayout* btnLayout = new QHBoxLayout();
-        QPushButton* cancelBtn = new QPushButton("Cancel", &dialog);
-        QPushButton* confirmBtn = new QPushButton("Confirm", &dialog);
-        confirmBtn->setEnabled(false);
-
-        btnLayout->addStretch();
-        btnLayout->addWidget(cancelBtn);
-        btnLayout->addWidget(confirmBtn);
-        layout->addLayout(btnLayout);
-
-        auto updateConfirmState = [=]() {
-            confirmBtn->setEnabled(
-                ack1->isChecked() && ack2->isChecked() &&
-                ack3->isChecked() && ack4->isChecked()
-            );
-        };
-
-        connect(ack1, &QCheckBox::checkStateChanged, confirmBtn, updateConfirmState);
-        connect(ack2, &QCheckBox::checkStateChanged, confirmBtn, updateConfirmState);
-        connect(ack3, &QCheckBox::checkStateChanged, confirmBtn, updateConfirmState);
-        connect(ack4, &QCheckBox::checkStateChanged, confirmBtn, updateConfirmState);
-
-        connect(cancelBtn, &QPushButton::clicked, &dialog, &QDialog::reject);
-        connect(confirmBtn, &QPushButton::clicked, &dialog, &QDialog::accept);
-
-        if (dialog.exec() == QDialog::Accepted) {
-            authTokenInput->setText(findNonceInProcess("Warframe.x64.exe").data());
-            settings.authTokenGetterRead = true;
-            settings.nonce = authTokenInput->text().toStdString();
-            WriteSettings(settings);
-        }
-    });
 
     connect(gameUpdateBtn, &QPushButton::clicked, [this]() {
         updateGameData();
@@ -974,9 +907,6 @@ QWidget* MainWindow::createOptionsPage() {
     auto autoSyncCheckbox = new QCheckBox("Enable Auto Inventory Sync", automationGroup);
     autoSyncCheckbox->setChecked(settings.autoSync);
 
-    auto syncOnMissionFinishCheckbox = new QCheckBox("Sync Inventory on mission finish", automationGroup);
-    syncOnMissionFinishCheckbox->setChecked(settings.syncOnMissionFinish);
-
     auto manualSyncBtn = new QPushButton("Sync inventory", dataGroup);
 
     auto intervalLabel = new QLabel("Auto-Sync Interval (minutes):", automationGroup);
@@ -986,7 +916,6 @@ QWidget* MainWindow::createOptionsPage() {
 
     automationLayout->addWidget(autoStartCheckbox);
     automationLayout->addWidget(autoSyncCheckbox);
-    automationLayout->addWidget(syncOnMissionFinishCheckbox);
     automationLayout->addWidget(manualSyncBtn);
     automationLayout->addWidget(intervalLabel);
     automationLayout->addWidget(intervalSpinBox);
@@ -1008,11 +937,6 @@ QWidget* MainWindow::createOptionsPage() {
 
     connect(autoSyncCheckbox, &QCheckBox::toggled, this, [=](bool checked) {
         settings.autoSync = checked;
-        WriteSettings(settings);
-    });
-
-    connect(syncOnMissionFinishCheckbox, &QCheckBox::toggled, this, [=](bool checked) {
-        settings.syncOnMissionFinish = checked;
         WriteSettings(settings);
     });
 

@@ -3,7 +3,6 @@
 #include <QTimer>
 #include <QMetaObject>
 #include <fstream>
-#include <EELogParser/logParser.h>
 #include "FileAccess/FileAccess.h"
 
 BackgroundWorker::BackgroundWorker(MainWindow* mw)
@@ -39,16 +38,16 @@ void BackgroundWorker::backgroundWork() {
         }
     }
 
-    if (settings.syncOnMissionFinish && checkMissionFinished()) {
+    /*if (settings.syncOnMissionFinish && checkMissionFinished()) {
         shouldUpdate = true;
-    }
+    }*/
 
     if (shouldUpdate) {
         triggerUpdate();
     }
 }
 
-bool BackgroundWorker::checkMissionFinished() {
+/*bool BackgroundWorker::checkMissionFinished() {
     static bool initialized = false;
     bool found = false;
 
@@ -118,7 +117,7 @@ bool BackgroundWorker::checkMissionFinished() {
         return true;
     }
     return false;
-}
+}*/
 
 
 void BackgroundWorker::triggerUpdate() {
