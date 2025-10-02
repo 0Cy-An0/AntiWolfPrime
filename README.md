@@ -1,5 +1,6 @@
-I have since updated this to remove any active connection with Warframe. do note however that just to be sure never open this and warframe at the same time, even tough this does not interface with warframe at all anymore
+I have since updated this to remove any active connection with Warframe. do note however that just to be sure never open this and warframe at the same time, even tough this does not interface with warframe at all anymore. making the following outline with """ refere to the very first version only.
 
+"""
 Update from DE:
 
 
@@ -15,7 +16,7 @@ their Link: https://support.warframe.com/hc/en-us/articles/360030014351-Third-Pa
 
 Desipte this Message/their communication remaining very vague. having this programm running while warframe is open will get you banned immediatly.
 
-
+"""
 
 
 
