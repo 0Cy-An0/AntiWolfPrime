@@ -1,4 +1,4 @@
-I have since updated this to remove any active connection with Warframe. do note however that just to be sure never open this and warframe at the same time, even tough this does not interface with warframe at all anymore. making the following outline with """ refere to the very first version only.
+I have since updated this to remove any active connection with Warframe. do note however that just to be sure never open this and warframe at the same time, even tough this does not interface with warframe at all anymore. making the following block between """ refere to the very first version only.
 
 """
 Update from DE:
